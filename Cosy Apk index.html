@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamFlex - Free Movies & TV Shows</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: #000;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            color: #e50914;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .content-types {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .content-type {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .content-type:last-child {
+            border-bottom: none;
+        }
+        
+        .content-type h3 {
+            color: #e50914;
+            margin-bottom: 10px;
+        }
+        
+        .content-type p {
+            line-height: 1.6;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .download-btn {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-btn:hover {
+            background: #b2070f;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            flex-basis: 30%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        footer {
+            background-color: #000;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .feature {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">StreamFlex</div>
+    </header>
+    
+    <div class="container">
+        <h1 style="text-align: center; margin: 20px 0;">Watch Unlimited Movies & TV Shows for Free</h1>
+        
+        <!-- Content Types in Hindi -->
+        <div class="content-types">
+            <div class="content-type">
+                <h3>अनीमे (Anime)</h3>
+                <p>जापानी एनीमेशन की दुनिया में डूब जाएं! एक्शन, रोमांस, कॉमेडी, और फैंटेसी से भरपूर शोज का आनंद लें। नारुतो, ड्रैगन बॉल, डेथ नोट जैसे क्लासिक्स से लेकर नए हिट्स तक सब कुछ उपलब्ध।</p>
+            </div>
+            
+            <div class="content-type">
+                <h3>के-ड्रामा (K-Drama)</h3>
+                <p>कोरियन ड्रामा की मोहक दुनिया! रोमांटिक कॉमेडी, हिस्टोरिकल एपिक्स, और थ्रिलर्स का अनोखा मिश्रण। क्रैश लैंडिंग ऑन यू, गोब्लिन, स्क्विड गेम जैसे बेस्टसेलर्स देखें।</p>
+            </div>
+            
+            <div class="content-type">
+                <h3>सी-ड्रामा (C-Drama)</h3>
+                <p>चाइनीस ड्रामा की शानदार कहानियाँ! वुक्सिया, मॉडर्न रोमांस, और पीरियड ड्रामा का भरपूर संग्रह। द लॉन्ग बॉलड, लव ऑफ़ थाउज़ेंड यर्स जैसे हिट शोज यहाँ उपलब्ध।</p>
+            </div>
+            
+            <div class="content-type">
+                <h3>हॉलीवुड मूवीज (Hollywood)</h3>
+                <p>विश्व सिनेमा का बेहतरीन संग्रह! ब्लॉकबस्टर एक्शन, थ्रिलर, साइंस फिक्शन और ऑस्कर विजेता फिल्में। एवेंजर्स, जॉन विक, इनसेप्शन जैसी हिट फिल्में देखें।</p>
+            </div>
+            
+            <div class="content-type">
+                <h3>एनिमेशन मूवीज (Animation)</h3>
+                <p>बच्चों और बड़ों सभी के लिए मनोरंजक एनिमेशन! डिज्नी, पिक्सर, ड्रीमवर्क्स की शानदार फिल्में। फ्रोजन, टॉय स्टोरी, हाउ टू ट्रेन योर ड्रैगन जैसी हिट फिल्में।</p>
+            </div>
+            
+            <div class="content-type">
+                <h3>भारतीय फिल्में (Indian Cinema)</h3>
+                <p>बॉलीवुड, टॉलीवुड और सभी भारतीय भाषाओं की फिल्में! रोमांस, एक्शन, कॉमेडी और सोशल ड्रामा का भरपूर संग्रह। दंगल, बाहुबली, 3 इडियट्स जैसी सुपरहिट फिल्में।</p>
+            </div>
+        </div>
+        
+        <!-- Download Section -->
+        <div class="download-section">
+            <h2>Download Now and Start Streaming!</h2>
+            <p>Latest version: 10.0 | Size: 25MB</p>
+            <a href="YOUR_APK_DIRECT_LINK_HERE" class="download-btn">Download APK</a>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Android 5.0+ required</p>
+        </div>
+        
+        <!-- Features -->
+        <div class="features">
+            <div class="feature">
+                <h3>🎬 10,000+ Titles</h3>
+                <p>Movies, TV shows, documentaries and more</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ HD Quality</h3>
+                <p>Stream in HD with minimal buffering</p>
+            </div>
+            <div class="feature">
+                <h3>💰 100% Free</h3>
+                <p>No subscriptions, no hidden fees</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 StreamFlex. All content is provided by third parties.</p>
+    </footer>
+</body>
+</html>
