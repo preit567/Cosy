@@ -31,6 +31,7 @@
             font-size: 2.5rem;
             color: #e50914;
             font-weight: bold;
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
         }
         
         .container {
@@ -45,6 +46,7 @@
             padding: 20px;
             border-radius: 10px;
             margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
         .content-type {
@@ -55,20 +57,45 @@
         
         .content-type:last-child {
             border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         
         .content-type h3 {
             color: #e50914;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
         }
         
         .content-type p {
             line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .hindi-text {
+            font-weight: bold;
+            color: #f1c40f;
+            font-size: 1.1rem;
+        }
+        
+        .english-text {
+            font-style: italic;
+            color: #bbb;
+            font-size: 0.95rem;
         }
         
         .download-section {
             text-align: center;
             margin: 40px 0;
+            padding: 30px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .download-section h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
         }
         
         .download-btn {
@@ -79,13 +106,17 @@
             font-size: 1.2rem;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
         }
         
         .download-btn:hover {
             background: #b2070f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(229, 9, 20, 0.4);
         }
         
         .features {
@@ -93,12 +124,28 @@
             flex-wrap: wrap;
             justify-content: space-around;
             margin: 40px 0;
+            gap: 20px;
         }
         
         .feature {
-            flex-basis: 30%;
+            flex: 1;
+            min-width: 250px;
             text-align: center;
-            margin-bottom: 20px;
+            padding: 25px 15px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #e50914;
+            font-size: 1.3rem;
         }
         
         footer {
@@ -106,11 +153,38 @@
             padding: 20px;
             text-align: center;
             margin-top: auto;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
         }
         
         @media (max-width: 768px) {
-            .feature {
-                flex-basis: 100%;
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .content-type h3 {
+                font-size: 1.3rem;
+            }
+            
+            .hindi-text {
+                font-size: 1rem;
+            }
+            
+            .download-section {
+                padding: 20px 15px;
+            }
+            
+            .download-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .download-btn {
+                padding: 12px 25px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -121,53 +195,53 @@
     </header>
     
     <div class="container">
-        <h1 style="text-align: center; margin: 20px 0;">Watch Unlimited Movies & TV Shows for Free</h1>
+        <h1 style="text-align: center; margin: 20px 0; font-size: 2.2rem;">Watch Unlimited Movies & TV Shows for Free</h1>
         
         <!-- Content Types in Hindi -->
         <div class="content-types">
             <div class="content-type">
                 <h3>एनीमे (Anime)</h3>
-                <p>जापानी एनीमेशन की दुनिया में डूब जाएं! एक्शन, रोमांस, कॉमेडी, और फैंटेसी से भरपूर शोज का आनंद लें। नारुतो, ड्रैगन बॉल, डेथ नोट जैसे क्लासिक्स से लेकर नए हिट्स तक सब कुछ उपलब्ध।
-                Dive into the world of Japanese animation! Enjoy shows packed with action, romance, comedy, and fantasy. From classics like Naruto, Dragon Ball, and Death Note to the latest hits—everything is available.</p>
+                <p class="hindi-text">जापानी एनीमेशन की दुनिया में डूब जाएं! एक्शन, रोमांस, कॉमेडी, और फैंटेसी से भरपूर शोज का आनंद लें। नारुतो, ड्रैगन बॉल, डेथ नोट जैसे क्लासिक्स से लेकर नए हिट्स तक सब कुछ उपलब्ध।</p>
+                <p class="english-text">Dive into the world of Japanese animation! Enjoy shows packed with action, romance, comedy, and fantasy. From classics like Naruto, Dragon Ball, and Death Note to the latest hits—everything is available.</p>
             </div>
             
             <div class="content-type">
                 <h3>के-ड्रामा (K-Drama)</h3>
-                <p>कोरियन ड्रामा की मोहक दुनिया! रोमांटिक कॉमेडी, हिस्टोरिकल एपिक्स, और थ्रिलर्स का अनोखा मिश्रण। क्रैश लैंडिंग ऑन यू, गोब्लिन, स्क्विड गेम जैसे बेस्टसेलर्स देखें।
-                Step into the captivating world of Korean dramas! A unique blend of romantic comedies, historical epics, and thrilling suspense. Watch bestsellers like *Crash Landing on You*, *Goblin*, and *Squid Game*.</p>
+                <p class="hindi-text">कोरियन ड्रामा की मोहक दुनिया! रोमांटिक कॉमेडी, हिस्टोरिकल एपिक्स, और थ्रिलर्स का अनोखा मिश्रण। क्रैश लैंडिंग ऑन यू, गोब्लिन, स्क्विड गेम जैसे बेस्टसेलर्स देखें।</p>
+                <p class="english-text">Step into the captivating world of Korean dramas! A unique blend of romantic comedies, historical epics, and thrilling suspense. Watch bestsellers like Crash Landing on You, Goblin, and Squid Game.</p>
             </div>
             
             <div class="content-type">
                 <h3>सी-ड्रामा (C-Drama)</h3>
-                <p>चाइनीस ड्रामा की शानदार कहानियाँ! वुक्सिया, मॉडर्न रोमांस, और पीरियड ड्रामा का भरपूर संग्रह। द लॉन्ग बॉलड, लव ऑफ़ थाउज़ेंड यर्स जैसे हिट शोज यहाँ उपलब्ध।
-                Experience the grand tales of Chinese dramas! A rich collection of wuxia, modern romance, and period dramas. Hit shows like *The Long Ballad* and *Love of Thousand Years* are available here.</p>
+                <p class="hindi-text">चाइनीस ड्रामा की शानदार कहानियाँ! वुक्सिया, मॉडर्न रोमांस, और पीरियड ड्रामा का भरपूर संग्रह। द लॉन्ग बॉलड, लव ऑफ़ थाउज़ेंड यर्स जैसे हिट शोज यहाँ उपलब्ध।</p>
+                <p class="english-text">Experience the grand tales of Chinese dramas! A rich collection of wuxia, modern romance, and period dramas. Hit shows like The Long Ballad and Love of Thousand Years are available here.</p>
             </div>
             
             <div class="content-type">
                 <h3>हॉलीवुड मूवीज (Hollywood)</h3>
-                <p>विश्व सिनेमा का बेहतरीन संग्रह! ब्लॉकबस्टर एक्शन, थ्रिलर, साइंस फिक्शन और ऑस्कर विजेता फिल्में। एवेंजर्स, जॉन विक, इनसेप्शन जैसी हिट फिल्में देखें।
-                Discover the finest collection of world cinema! Blockbuster action, thrillers, sci-fi, and Oscar-winning films. Watch hit movies like *Avengers*, *John Wick*, and *Inception*.</p>
+                <p class="hindi-text">विश्व सिनेमा का बेहतरीन संग्रह! ब्लॉकबस्टर एक्शन, थ्रिलर, साइंस फिक्शन और ऑस्कर विजेता फिल्में। एवेंजर्स, जॉन विक, इनसेप्शन जैसी हिट फिल्में देखें।</p>
+                <p class="english-text">Discover the finest collection of world cinema! Blockbuster action, thrillers, sci-fi, and Oscar-winning films. Watch hit movies like Avengers, John Wick, and Inception.</p>
             </div>
             
             <div class="content-type">
                 <h3>एनिमेशन मूवीज (Animation)</h3>
-                <p>बच्चों और बड़ों सभी के लिए मनोरंजक एनिमेशन! डिज्नी, पिक्सर, ड्रीमवर्क्स की शानदार फिल्में। फ्रोजन, टॉय स्टोरी, हाउ टू ट्रेन योर ड्रैगन जैसी हिट फिल्में।
-                **Entertaining animations for kids and adults alike!** Enjoy spectacular films from Disney, Pixar, and DreamWorks. Watch hit movies like *Frozen*, *Toy Story*, and *How to Train Your Dragon*.</p>
+                <p class="hindi-text">बच्चों और बड़ों सभी के लिए मनोरंजक एनिमेशन! डिज्नी, पिक्सर, ड्रीमवर्क्स की शानदार फिल्में। फ्रोजन, टॉय स्टोरी, हाउ टू ट्रेन योर ड्रैगन जैसी हिट फिल्में।</p>
+                <p class="english-text">Entertaining animations for kids and adults alike! Enjoy spectacular films from Disney, Pixar, and DreamWorks. Watch hit movies like Frozen, Toy Story, and How to Train Your Dragon.</p>
             </div>
             
             <div class="content-type">
                 <h3>भारतीय फिल्में (Indian Cinema)</h3>
-                <p>बॉलीवुड, टॉलीवुड और सभी भारतीय भाषाओं की फिल्में! रोमांस, एक्शन, कॉमेडी और सोशल ड्रामा का भरपूर संग्रह। दंगल, बाहुबली, 3 इडियट्स जैसी सुपरहिट फिल्में।
-                **Bollywood, Tollywood & Indian cinema in all languages!** A fantastic collection of romance, action, comedy, and social dramas. Enjoy superhit films like *Dangal*, *Baahubali*, and *3 Idiots*.</p>
+                <p class="hindi-text">बॉलीवुड, टॉलीवुड और सभी भारतीय भाषाओं की फिल्में! रोमांस, एक्शन, कॉमेडी और सोशल ड्रामा का भरपूर संग्रह। दंगल, बाहुबली, 3 इडियट्स जैसी सुपरहिट फिल्में।</p>
+                <p class="english-text">Bollywood, Tollywood & Indian cinema in all languages! A fantastic collection of romance, action, comedy, and social dramas. Enjoy superhit films like Dangal, Baahubali, and 3 Idiots.</p>
             </div>
         </div>
         
         <!-- Download Section -->
         <div class="download-section">
             <h2>Download Now and Start Streaming!</h2>
-            <p>Latest version: 1.0.0 | Size: 26MB</p>
-            <a href="https://drive.usercontent.google.com/download?id=10QYMtMOjaZZvSXeUwZUiZvIGIS0u-gAG&export=download&authuser=0&confirm=t&uuid=13926c75-f097-42c0-8e0a-ca50127bf172&at=AN8xHopzTynyoZpYxA1eMJbs3Zam%3A1750142388521" class="download-btn">Download APK</a>
-            <p style="margin-top: 10px; font-size: 0.9rem;">Android 8.0+ required</p>
+            <p>Latest version: 1.0.0 | Size: 28MB</p>
+            <a href="#" id="direct-download" class="download-btn">Download APK</a>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #aaa;">Android 8.0+ required</p>
         </div>
         
         <!-- Features -->
@@ -189,6 +263,31 @@
     
     <footer>
         <p>© 2025 Cosy. All content is provided by third parties.</p>
+        <p style="margin-top: 8px; color: #777;">For entertainment purposes only</p>
     </footer>
+
+    <script>
+        document.getElementById('direct-download').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Create direct download link
+            const fileId = '10QYMtMOjaZZvSXeUwZUiZvIGIS0u-gAG';
+            const directUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+            
+            // Create temporary anchor tag for download
+            const anchor = document.createElement('a');
+            anchor.href = directUrl;
+            anchor.download = 'Cosy_Streaming_App_V1.0.0.apk';
+            anchor.style.display = 'none';
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            
+            // Fallback - open in new tab if download doesn't start
+            setTimeout(() => {
+                window.open(directUrl, '_blank');
+            }, 1000);
+        });
+    </script>
 </body>
-</html>
+    </html>
