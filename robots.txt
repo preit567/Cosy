@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://preit567.github.io/Cosy/sitemap.xml
