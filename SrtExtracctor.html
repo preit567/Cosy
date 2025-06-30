@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chinese Subtitle Translator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      background: #f9f9f9;
+      color: #222;
+    }
+    h1 {
+      font-size: 1.5em;
+      text-align: center;
+    }
+    input, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1em;
+    }
+    button {
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    button:disabled {
+      background: #aaa;
+    }
+    progress {
+      width: 100%;
+      margin-top: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+      font-family: monospace;
+      display: none;
+    }
+    a {
+      display: block;
+      margin-top: 10px;
+      color: #1a73e8;
+    }
+    video {
+      width: 100%;
+      max-height: 300px;
+      margin-top: 10px;
+    }
+    .status {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Chinese Subtitle Extractor & Translator</h1>
+<p>Select a video (with hardcoded Chinese subtitles), and get a translated English SRT.</p>
+
+<input type="file" id="videoInput" accept="video/*">
+<video id="preview" controls style="display:none;"></video>
+
+<label for="sampleRate">Sample every (seconds):</label>
+<input type="number" id="sampleRate" min="0.1" max="5" step="0.1" value="1">
+
+<button id="generateBtn" disabled>Generate Translated SRT</button>
+<progress id="progressBar" value="0" max="100" style="display:none;"></progress>
+
+<div id="status" class="status">Please select a video file</div>
+<a id="downloadLink" style="display:none;">Download SRT File</a>
+<textarea id="srtTextArea" readonly></textarea>
+
+<script>
+  const videoInput = document.getElementById('videoInput');
+  const preview = document.getElementById('preview');
+  const generateBtn = document.getElementById('generateBtn');
+  const progressBar = document.getElementById('progressBar');
+  const status = document.getElementById('status');
+  const downloadLink = document.getElementById('downloadLink');
+  const sampleRateInput = document.getElementById('sampleRate');
+  const srtTextArea = document.getElementById('srtTextArea');
+
+  let videoDuration = 0;
+  let subtitles = [];
+
+  videoInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const videoURL = URL.createObjectURL(file);
+    preview.src = videoURL;
+    preview.style.display = 'block';
+    generateBtn.disabled = false;
+    status.textContent = 'Video loaded. Tap "Generate SRT" to extract.';
+    preview.onloadedmetadata = () => {
+      videoDuration = preview.duration;
+    };
+  });
+
+  generateBtn.addEventListener('click', async function () {
+    generateBtn.disabled = true;
+    progressBar.style.display = 'block';
+    status.textContent = 'Processing video...';
+    subtitles = [];
+
+    const sampleRate = parseFloat(sampleRateInput.value);
+    const totalSamples = Math.ceil(videoDuration / sampleRate);
+
+    for (let i = 0; i < totalSamples; i++) {
+      const currentTime = i * sampleRate;
+      await processVideoFrame(currentTime);
+      progressBar.value = ((i + 1) / totalSamples) * 100;
+      status.textContent = `Processing... ${Math.round(progressBar.value)}%`;
+    }
+
+    const srtContent = generateSRTContent();
+    try {
+      const blob = new Blob([srtContent], { type: 'text/plain' });
+      const blobURL = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobURL;
+      a.download = "translated_subtitles.srt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      downloadLink.href = blobURL;
+      downloadLink.download = 'translated_subtitles.srt';
+      downloadLink.style.display = 'block';
+    } catch (e) {
+      console.warn("Download failed. Showing fallback.");
+      srtTextArea.style.display = 'block';
+      srtTextArea.value = srtContent;
+    }
+
+    status.textContent = 'SRT ready!';
+    generateBtn.disabled = false;
+  });
+
+  async function processVideoFrame(time) {
+    return new Promise((resolve) => {
+      preview.currentTime = time;
+      preview.onseeked = async function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = preview.videoWidth;
+        canvas.height = preview.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+
+        const subtitleHeight = Math.floor(canvas.height * 0.2);
+        const subtitleY = canvas.height - subtitleHeight;
+        const imageData = ctx.getImageData(0, subtitleY, canvas.width, subtitleHeight);
+
+        const subCanvas = document.createElement('canvas');
+        subCanvas.width = canvas.width;
+        subCanvas.height = subtitleHeight;
+        const subCtx = subCanvas.getContext('2d');
+        subCtx.putImageData(imageData, 0, 0);
+
+        try {
+          const result = await Tesseract.recognize(
+            subCanvas,
+            'chi_sim+eng',
+            {
+              logger: m => console.log(m),
+              tessedit_pageseg_mode: 6
+            }
+          );
+
+          const rawText = result.data.text.trim();
+          if (rawText) {
+            const translated = await translateText(rawText);
+            subtitles.push({
+              start: time,
+              end: time + parseFloat(sampleRateInput.value),
+              text: translated
+            });
+          }
+        } catch (err) {
+          console.error('OCR error:', err);
+        }
+        resolve();
+      };
+    });
+  }
+
+  function generateSRTContent() {
+    let srt = '';
+    subtitles.forEach((sub, i) => {
+      srt += `${i + 1}\n`;
+      srt += `${formatTime(sub.start)} --> ${formatTime(sub.end)}\n`;
+      srt += `${sub.text}\n\n`;
+    });
+    return srt;
+  }
+
+  function formatTime(seconds) {
+    const date = new Date(0);
+    date.setSeconds(seconds);
+    return date.toISOString().substr(11, 12).replace('.', ',');
+  }
+
+  async function translateText(text) {
+    try {
+      const res = await fetch("https://libretranslate.de/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          q: text,
+          source: "zh",
+          target: "en",
+          format: "text"
+        })
+      });
+      const data = await res.json();
+      return data.translatedText || text;
+    } catch (e) {
+      console.warn('Translation failed, returning original:', text);
+      return text;
+    }
+  }
+</script>
+</body>
+</html>
