@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Subtitle Editor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        video {
+            width: 100%;
+            background-color: #000;
+            border-radius: 4px;
+        }
+        .subtitle-display {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 24px;
+            border-radius: 4px;
+            margin: 0 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button, input[type="file"] {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .editor-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .editor-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .time-display {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .subtitle-list {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .subtitle-item {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .subtitle-item:hover {
+            background-color: #f8f9fa;
+        }
+        .subtitle-item.active {
+            background-color: #e3f2fd;
+        }
+        .subtitle-time {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .subtitle-text {
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Subtitle Editor</h1>
+        
+        <div class="video-container">
+            <video id="videoPlayer" controls></video>
+            <div class="subtitle-display" id="subtitleDisplay"></div>
+        </div>
+        
+        <div class="controls">
+            <input type="file" id="videoFile" accept="video/*">
+            <input type="file" id="subtitleFile" accept=".srt,.txt">
+            <button id="syncButton" disabled>Sync Subtitles</button>
+            <button id="downloadSrt" disabled>Download SRT</button>
+            <button id="downloadTxt" disabled>Download TXT</button>
+            <div class="time-display">Current time: <span id="currentTime">00:00:00</span></div>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-section">
+                <label for="subtitleEditor">Subtitle Editor (SRT format):</label>
+                <textarea id="subtitleEditor" spellcheck="false"></textarea>
+            </div>
+            
+            <div class="editor-section">
+                <label>Subtitle List (click to jump):</label>
+                <div class="subtitle-list" id="subtitleList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoFileInput = document.getElementById('videoFile');
+        const subtitleFileInput = document.getElementById('subtitleFile');
+        const subtitleEditor = document.getElementById('subtitleEditor');
+        const subtitleDisplay = document.getElementById('subtitleDisplay');
+        const subtitleList = document.getElementById('subtitleList');
+        const syncButton = document.getElementById('syncButton');
+        const downloadSrtBtn = document.getElementById('downloadSrt');
+        const downloadTxtBtn = document.getElementById('downloadTxt');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        
+        // Global variables
+        let subtitles = [];
+        let activeSubtitleIndex = -1;
+        
+        // Event listeners
+        videoFileInput.addEventListener('change', handleVideoUpload);
+        subtitleFileInput.addEventListener('change', handleSubtitleUpload);
+        syncButton.addEventListener('click', syncSubtitlesWithEditor);
+        downloadSrtBtn.addEventListener('click', downloadSrt);
+        downloadTxtBtn.addEventListener('click', downloadTxt);
+        videoPlayer.addEventListener('timeupdate', updateSubtitleDisplay);
+        subtitleEditor.addEventListener('input', parseEditorContent);
+        
+        // Functions
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                videoPlayer.src = videoURL;
+                syncButton.disabled = false;
+            }
+        }
+        
+        function handleSubtitleUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    subtitleEditor.value = e.target.result;
+                    parseEditorContent();
+                    downloadSrtBtn.disabled = false;
+                    downloadTxtBtn.disabled = false;
+                };
+                reader.readAsText(file);
+            }
+        }
+        
+        function parseEditorContent() {
+            const content = subtitleEditor.value;
+            subtitles = parseSrt(content);
+            renderSubtitleList();
+        }
+        
+        function parseSrt(content) {
+            const lines = content.split('\n');
+            const subtitles = [];
+            let currentSub = null;
+            
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                
+                if (!currentSub) {
+                    currentSub = { id: parseInt(line.trim()) };
+                } else if (!currentSub.time) {
+                    const timeMatch = line.match(/(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/);
+                    if (timeMatch) {
+                        currentSub.start = timeStrToSeconds(timeMatch[1]);
+                        currentSub.end = timeStrToSeconds(timeMatch[2]);
+                        currentSub.time = line;
+                    }
+                } else {
+                    if (!currentSub.text) {
+                        currentSub.text = line;
+                    } else {
+                        currentSub.text += '\n' + line;
+                    }
+                    
+                    // Check if next line is empty or a number (new subtitle)
+                    const nextLine = lines[lines.indexOf(line) + 1];
+                    if (!nextLine || !nextLine.trim() || /^\d+$/.test(nextLine.trim())) {
+                        subtitles.push(currentSub);
+                        currentSub = null;
+                    }
+                }
+            }
+            
+            return subtitles;
+        }
+        
+        function timeStrToSeconds(timeStr) {
+            const parts = timeStr.split(/[:,]/);
+            const hh = parseInt(parts[0]);
+            const mm = parseInt(parts[1]);
+            const ss = parseInt(parts[2]);
+            const ms = parseInt(parts[3]);
+            return hh * 3600 + mm * 60 + ss + ms / 1000;
+        }
+        
+        function secondsToTimeStr(seconds) {
+            const hh = Math.floor(seconds / 3600).toString().padStart(2, '0');
+            const mm = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+            const ss = Math.floor(seconds % 60).toString().padStart(2, '0');
+            const ms = Math.floor((seconds % 1) * 1000).toString().padStart(3, '0');
+            return `${hh}:${mm}:${ss},${ms}`;
+        }
+        
+        function renderSubtitleList() {
+            subtitleList.innerHTML = '';
+            
+            subtitles.forEach((sub, index) => {
+                const item = document.createElement('div');
+                item.className = 'subtitle-item';
+                if (index === activeSubtitleIndex) {
+                    item.classList.add('active');
+                }
+                
+                const timeElement = document.createElement('div');
+                timeElement.className = 'subtitle-time';
+                timeElement.textContent = `${secondsToTimeStr(sub.start)} → ${secondsToTimeStr(sub.end)}`;
+                
+                const textElement = document.createElement('div');
+                textElement.className = 'subtitle-text';
+                textElement.textContent = sub.text;
+                
+                item.appendChild(timeElement);
+                item.appendChild(textElement);
+                
+                item.addEventListener('click', () => {
+                    videoPlayer.currentTime = sub.start;
+                    videoPlayer.play();
+                });
+                
+                subtitleList.appendChild(item);
+            });
+        }
+        
+        function updateSubtitleDisplay() {
+            const currentTime = videoPlayer.currentTime;
+            currentTimeDisplay.textContent = secondsToTimeStr(currentTime);
+            
+            // Find active subtitle
+            let newActiveIndex = -1;
+            subtitles.forEach((sub, index) => {
+                if (currentTime >= sub.start && currentTime <= sub.end) {
+                    newActiveIndex = index;
+                    subtitleDisplay.textContent = sub.text;
+                }
+            });
+            
+            if (newActiveIndex === -1) {
+                subtitleDisplay.textContent = '';
+            }
+            
+            // Update active state in list
+            if (newActiveIndex !== activeSubtitleIndex) {
+                activeSubtitleIndex = newActiveIndex;
+                renderSubtitleList();
+            }
+        }
+        
+        function syncSubtitlesWithEditor() {
+            parseEditorContent();
+        }
+        
+        function generateSrtContent() {
+            let srtContent = '';
+            subtitles.forEach(sub => {
+                srtContent += `${sub.id}\n`;
+                srtContent += `${sub.time}\n`;
+                srtContent += `${sub.text}\n\n`;
+            });
+            return srtContent;
+        }
+        
+        function generateTxtContent() {
+            let txtContent = '';
+            subtitles.forEach(sub => {
+                txtContent += `${sub.text}\n\n`;
+            });
+            return txtContent;
+        }
+        
+        function downloadSrt() {
+            const content = generateSrtContent();
+            downloadFile(content, 'subtitles.srt');
+        }
+        
+        function downloadTxt() {
+            const content = generateTxtContent();
+            downloadFile(content, 'subtitles.txt');
+        }
+        
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
