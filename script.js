@@ -12,13 +12,14 @@ const downloadBtn = document.getElementById("downloadBtn");
 
 const status = document.getElementById("status");
 
+let currentUtterance = null;
 let mediaRecorder;
 let audioChunks = [];
 
 function populateVoices() {
     const voices = synth.getVoices();
     voiceSelect.innerHTML = `<option value="">Default Voice</option>`;
-    voices.forEach((voice, i) => {
+    voices.forEach((voice) => {
         const option = document.createElement("option");
         option.value = voice.name;
         option.textContent = `${voice.name} (${voice.lang})`;
@@ -26,13 +27,21 @@ function populateVoices() {
     });
 }
 
-synth.onvoiceschanged = populateVoices;
+// Load voices async
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoices;
+}
+populateVoices();
 
 playBtn.onclick = () => {
-    const utterThis = new SpeechSynthesisUtterance(textInput.value);
+    const text = textInput.value;
+    if (!text) return;
+
+    const utterThis = new SpeechSynthesisUtterance(text);
+    currentUtterance = utterThis;
+
     const selectedVoice = voiceSelect.value;
     const voices = synth.getVoices();
-
     if (selectedVoice) {
         utterThis.voice = voices.find(voice => voice.name === selectedVoice);
     }
@@ -40,42 +49,40 @@ playBtn.onclick = () => {
     utterThis.rate = parseFloat(rateSelect.value);
     utterThis.pitch = parseFloat(pitchSelect.value);
 
-    // Start audio capture
-    const audioCtx = new AudioContext();
-    const dest = audioCtx.createMediaStreamDestination();
-    const source = audioCtx.createMediaStreamSource(dest.stream);
+    // Optional: MP3/WebM recording
+    const audioContext = new AudioContext();
+    const dest = audioContext.createMediaStreamDestination();
+    const synthSource = audioContext.createMediaStreamSource(dest.stream);
     mediaRecorder = new MediaRecorder(dest.stream);
+    audioChunks = [];
 
-    mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-    };
-
+    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
     mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const audioUrl = URL.createObjectURL(audioBlob);
+        const url = URL.createObjectURL(audioBlob);
         const a = document.createElement('a');
-        a.href = audioUrl;
-        a.download = "speech.webm"; // not mp3, but can play/download
+        a.href = url;
+        a.download = 'speech.webm';
         a.click();
+        status.textContent = "Downloaded!";
     };
 
     mediaRecorder.start();
-    status.className = "status success";
-    status.textContent = "Playing and recording...";
-    status.style.display = "block";
 
     utterThis.onend = () => {
         mediaRecorder.stop();
+        status.className = "status success";
+        status.textContent = "Speech finished!";
         playBtn.disabled = false;
         pauseBtn.disabled = true;
         resumeBtn.disabled = true;
         stopBtn.disabled = true;
         downloadBtn.disabled = false;
-        status.textContent = "Finished! Click Download.";
     };
 
     synth.speak(utterThis);
-
+    status.className = "status success";
+    status.textContent = "Speaking...";
     playBtn.disabled = true;
     pauseBtn.disabled = false;
     stopBtn.disabled = false;
@@ -98,6 +105,9 @@ resumeBtn.onclick = () => {
 
 stopBtn.onclick = () => {
     synth.cancel();
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+    }
     playBtn.disabled = false;
     pauseBtn.disabled = true;
     resumeBtn.disabled = true;
@@ -106,5 +116,5 @@ stopBtn.onclick = () => {
 };
 
 downloadBtn.onclick = () => {
-    status.textContent = "Downloading...";
+    // No action needed; download triggers automatically after speaking
 };
