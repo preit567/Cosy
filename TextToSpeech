@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TextToSpeexh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    select, button {
+      padding: 8px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .download-btn {
+      background-color: #2196F3;
+    }
+    .download-btn:hover {
+      background-color: #0b7dda;
+    }
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+      display: block;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Text-to-Audio Generator</h1>
+    
+    <textarea id="textInput" placeholder="Enter or paste your text here..."></textarea>
+    
+    <div class="controls">
+      <select id="voiceSelect">
+        <option value="">Default Voice</option>
+      </select>
+      
+      <select id="rateSelect">
+        <option value="1">Normal Speed</option>
+        <option value="0.8">Slow</option>
+        <option value="1.2">Fast</option>
+        <option value="1.5">Very Fast</option>
+      </select>
+      
+      <select id="pitchSelect">
+        <option value="1">Normal Pitch</option>
+        <option value="0.8">Low Pitch</option>
+        <option value="1.2">High Pitch</option>
+      </select>
+      
+      <button id="playBtn">Play</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resumeBtn" disabled>Resume</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="downloadBtn" class="download-btn" disabled>Download</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+
+  <!-- ✅ Correct path to JS file -->
+  <script src="script.js"></script>
+</body>
+</html>
