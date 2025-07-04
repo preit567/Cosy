@@ -1,245 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text-to-Audio Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        .controls {
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        select, button {
-            padding: 8px 15px;
-            font-size: 16px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            background-color: white;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .download-btn {
-            background-color: #2196F3;
-        }
-        .download-btn:hover {
-            background-color: #0b7dda;
-        }
-        .status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-        }
-        .success {
-            background-color: #dff0d8;
-            color: #3c763d;
-            display: block;
-        }
-        .error {
-            background-color: #f2dede;
-            color: #a94442;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>TextToSpeexh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    select, button {
+      padding: 8px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .download-btn {
+      background-color: #2196F3;
+    }
+    .download-btn:hover {
+      background-color: #0b7dda;
+    }
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+      display: block;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Text-to-Audio Generator</h1>
-        
-        <textarea id="textInput" placeholder="Enter or paste your text here..."></textarea>
-        
-        <div class="controls">
-            <select id="voiceSelect">
-                <option value="">Default Voice</option>
-            </select>
-            
-            <select id="rateSelect">
-                <option value="1">Normal Speed</option>
-                <option value="0.8">Slow</option>
-                <option value="1.2">Fast</option>
-                <option value="1.5">Very Fast</option>
-            </select>
-            
-            <select id="pitchSelect">
-                <option value="1">Normal Pitch</option>
-                <option value="0.8">Low Pitch</option>
-                <option value="1.2">High Pitch</option>
-            </select>
-            
-            <button id="playBtn">Play</button>
-            <button id="pauseBtn" disabled>Pause</button>
-            <button id="resumeBtn" disabled>Resume</button>
-            <button id="stopBtn" disabled>Stop</button>
-            <button id="downloadBtn" class="download-btn" disabled>Download</button>
-        </div>
-        
-        <div id="status" class="status"></div>
+  <div class="container">
+    <h1>Text-to-Audio Generator</h1>
+
+    <textarea id="textInput" placeholder="Enter or paste your text here..."></textarea>
+
+    <div class="controls">
+      <select id="voiceSelect">
+        <option value="">Default Voice</option>
+      </select>
+
+      <select id="rateSelect">
+        <option value="1">Normal Speed</option>
+        <option value="0.8">Slow</option>
+        <option value="1.2">Fast</option>
+        <option value="1.5">Very Fast</option>
+      </select>
+
+      <select id="pitchSelect">
+        <option value="1">Normal Pitch</option>
+        <option value="0.8">Low Pitch</option>
+        <option value="1.2">High Pitch</option>
+      </select>
+
+      <button id="playBtn">Play</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resumeBtn" disabled>Resume</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <a id="downloadBtn" class="download-btn" disabled>Download</a>
     </div>
 
-    <script 
+    <div id="status" class="status"></div>
+  </div>
 
-        const synth = window.speechSynthesis;
-const textInput = document.getElementById("textInput");
-const voiceSelect = document.getElementById("voiceSelect");
-const rateSelect = document.getElementById("rateSelect");
-const pitchSelect = document.getElementById("pitchSelect");
-
-const playBtn = document.getElementById("playBtn");
-const pauseBtn = document.getElementById("pauseBtn");
-const resumeBtn = document.getElementById("resumeBtn");
-const stopBtn = document.getElementById("stopBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
-const status = document.getElementById("status");
-
-let currentUtterance = null;
-let mediaRecorder;
-let audioChunks = [];
-
-function populateVoices() {
-    const voices = synth.getVoices();
-    voiceSelect.innerHTML = `<option value="">Default Voice</option>`;
-    voices.forEach((voice) => {
-        const option = document.createElement("option");
-        option.value = voice.name;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        voiceSelect.appendChild(option);
-    });
-}
-
-// Load voices async
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = populateVoices;
-}
-populateVoices();
-
-playBtn.onclick = () => {
-    const text = textInput.value;
-    if (!text) return;
-
-    const utterThis = new SpeechSynthesisUtterance(text);
-    currentUtterance = utterThis;
-
-    const selectedVoice = voiceSelect.value;
-    const voices = synth.getVoices();
-    if (selectedVoice) {
-        utterThis.voice = voices.find(voice => voice.name === selectedVoice);
-    }
-
-    utterThis.rate = parseFloat(rateSelect.value);
-    utterThis.pitch = parseFloat(pitchSelect.value);
-
-    // Optional: MP3/WebM recording
-    const audioContext = new AudioContext();
-    const dest = audioContext.createMediaStreamDestination();
-    const synthSource = audioContext.createMediaStreamSource(dest.stream);
-    mediaRecorder = new MediaRecorder(dest.stream);
-    audioChunks = [];
-
-    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-    mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const url = URL.createObjectURL(audioBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'speech.webm';
-        a.click();
-        status.textContent = "Downloaded!";
-    };
-
-    mediaRecorder.start();
-
-    utterThis.onend = () => {
-        mediaRecorder.stop();
-        status.className = "status success";
-        status.textContent = "Speech finished!";
-        playBtn.disabled = false;
-        pauseBtn.disabled = true;
-        resumeBtn.disabled = true;
-        stopBtn.disabled = true;
-        downloadBtn.disabled = false;
-    };
-
-    synth.speak(utterThis);
-    status.className = "status success";
-    status.textContent = "Speaking...";
-    playBtn.disabled = true;
-    pauseBtn.disabled = false;
-    stopBtn.disabled = false;
-    downloadBtn.disabled = true;
-};
-
-pauseBtn.onclick = () => {
-    synth.pause();
-    pauseBtn.disabled = true;
-    resumeBtn.disabled = false;
-    status.textContent = "Paused";
-};
-
-resumeBtn.onclick = () => {
-    synth.resume();
-    resumeBtn.disabled = true;
-    pauseBtn.disabled = false;
-    status.textContent = "Resumed";
-};
-
-stopBtn.onclick = () => {
-    synth.cancel();
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-    }
-    playBtn.disabled = false;
-    pauseBtn.disabled = true;
-    resumeBtn.disabled = true;
-    stopBtn.disabled = true;
-    status.textContent = "Stopped";
-};
-
-downloadBtn.onclick = () => {
-    // No action needed; download triggers automatically after speaking
-};
-        
-        ></script>
+  <script src="script.js"></script>
 </body>
-</html>
+        </html>
